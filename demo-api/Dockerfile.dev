@@ -1,0 +1,17 @@
+# You can manage configurations for multiple environments by creating multiple Dockerfiles
+# Although this is not a recommended way of doing things
+ARG NODE_VERSION=22
+
+FROM node:${NODE_VERSION}-alpine
+
+ENV NODE_ENV=dev
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+ENTRYPOINT ["npm", "start"]

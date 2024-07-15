@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "message": "Hello Dev!",
+        "author": "Dev"
+    },
+    "prod": {
+        "message": "Hello Prod!",
+        "author": "Prod"
+    }
+}
