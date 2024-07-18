@@ -8,4 +8,5 @@
     <li>docker build --platform="linux/amd64" -t data-pipeline . - Build an image specific to a platform architecture</li>
     <li>docker build --target build -t api . - Build a certain stage from a multi stage Dockerfile</li>
     <li>docker run -p 8080:8080 api - Run a container using port-forwarding so it can be accessed from the host machine</li>
+    <li>docker run --mount type=bind,source=$(pwd)/,target=/home/customuser/app/ -p 8080:8080 demo-api:19</li>
 </ul>
