@@ -9,8 +9,7 @@ FROM node:${NODE_VERSION}-alpine
 ENV TOKEN=""
 
 # Group commands to reduce the number of layers
-RUN apk add shadow@edge=${SHADOW_VERSION} && \
-    groupadd -r customgroup && useradd -r -g customgroup customuser
+RUN apk add shadow
 
 # Define custom users so the container does not run with root privileges
 RUN groupadd -r customgroup && useradd -r -g customgroup customuser
@@ -35,10 +34,13 @@ RUN npm install
 
 # Expose the port that the app is listening on
 # Note: This exposes the port to other containers but not to the host machine
-EXPOSE 8080
 
 # Use COPY over Add to avoid the automatic extraction of tar files
 COPY . .
+
+RUN mkdir tmp
+
+EXPOSE 8080
 
 # Define the command that will run when the container starts
 ENTRYPOINT ["npm", "start"]

@@ -6,28 +6,28 @@ const port = 8080;
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log(`Request received: ${req.method} ${req.url}`);
+// app.use((req, res, next) => {
+//     console.log(`Request received: ${req.method} ${req.url}`);
 
-    const { token } = req.headers;
+//     const { token } = req.headers;
 
-    if (token === process.env.TOKEN)
-        next();
-    else
-        res.send('Forbidden');
-})
-
-// asdasd
+//     if (token === process.env.TOKEN)
+//         next();
+//     else
+//         res.send('Forbidden');
+// })
 
 app.get('/', (req, res) => {
     if (process.env.NODE_ENV === 'production')
         res.send('Hello Prod!');
     else
-        res.send('Hello Dev!');
+        res.send('Hello Devinator!');
 });
 
+
+
 app.get('/read', (req, res) => {
-    fs.readFile('quotes.json', 'utf8', (err, data) => {
+    fs.readFile('./quotes.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
             res.status(500).send('Error reading file');
@@ -39,7 +39,7 @@ app.get('/read', (req, res) => {
 
 app.post('/write', (req, res) => {
     const payload = req.body;
-    fs.writeFile('/path/to/file.txt', JSON.stringify(payload), (err) => {
+    fs.writeFile('./quotes.json', JSON.stringify(payload), (err) => {
         if (err) {
             console.error(err);
             res.status(500).send('Error writing to file');

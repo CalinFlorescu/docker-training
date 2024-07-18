@@ -1,10 +1,6 @@
 {
     "dev": {
-        "message": "Hello Dev!",
-        "author": "Dev"
-    },
-    "prod": {
-        "message": "Hello Prod!",
-        "author": "Prod"
+        "message": "This is a test! Let's hope for the best!",
+        "author": "Calin"
     }
 }
