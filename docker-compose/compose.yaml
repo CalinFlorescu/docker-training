@@ -1,0 +1,73 @@
+version: '3'
+
+# Define the services that make up the application
+services:
+  frontend:
+    # Building the frontend image from the Dockerfile in the frontend directory if the image does not exist locally
+    build: 
+      context: ./frontend
+      target: devasd # Target the dev stage in the Dockerfile
+    restart: always # Restart the container if it stops
+    # Expose the container's port 3000 to the host machine's port 3000
+    ports:
+      - "3000:3000"
+    # Set the BACKEND_API environment variable to http://localhost:8080
+    environment:
+      # We need to set the BACKEND_API environment variable to http://localhost:8080 so that the frontend can communicate with the backend.
+      # The frontend code will be executed from the browser running on the host machine, so it will not be able to access the backend using the container/service name
+      # because the browser does not know about the Docker network.
+      BACKEND_API: http://localhost:8080
+    # Connect the frontend service to the frontend network to separate it from the backend and the DB
+    networks:
+      - frontend
+    # Depend on the backend service to ensure that the backend is started before the frontend
+    depends_on:
+      - backend
+    # Bind the frontend directory to the /app directory in the container to allow live reloading of the frontend code
+    volumes:
+    - type: bind
+      source: ./frontend
+      target: /app
+
+  backend:
+    build:
+      context: ./backend
+    restart: always
+    ports:
+      - 8080:8080
+    # The backend service needs to connect to both the frontend and the backend networks to communicate with the frontend and the DB
+    networks:
+      - frontend
+      - backend
+    environment:
+      # We can use the service name as the hostname to connect to the DB because the backend code will be executed in the backend service container.
+      MONGODB_URI: mongodb://db:27017/users
+    depends_on:
+      - db
+    volumes:
+    - type: bind
+      source: ./backend
+      target: /app
+
+  db:
+    # Use the official MongoDB image from Docker Hub
+    # We can omit the build section because we are using an existing image
+    image: mongo:latest
+    restart: always
+    # We don't need to expose the port to the host machine because the backend service will connect to the DB using the container name
+    expose:
+      - 27017
+    # We create a named volume called mongo_data to persist the MongoDB data
+    volumes:
+    - mongo_data:/data/db
+    networks:
+    - backend
+
+# Define the networks to separate the services
+networks:
+  backend: {}
+  frontend: {}
+
+# Define the named volumes to persist the MongoDB data
+volumes:
+  mongo_data: {}
